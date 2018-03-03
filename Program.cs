@@ -42,19 +42,20 @@ namespace bible
             bible.text = textRegex[1];
             string output ="";
 
-            if (bible.chapter == 1 && bible.verse ==1)
+            //Add bible book names
+            if (bible.chapter == 1 && bible.verse == 1 && previous_book == "")
             {
                 output += "\"" + bible.book + "\":{";
                 previous_book = bible.book;
 
             }
-            //else
-            //{
-            //    output += "}\"" + bible.book + "\":{";
-            //    previous_book = bible.book;
-            //}
+            else if (previous_book != bible.book)
+            {
+                output += "}},\"" + bible.book + "\":{";
+                previous_book = bible.book;
+            }
 
-
+            //Add bible chapter names
             if (bible.verse == 1 && bible.chapter == 1)
             {
                 output += "\"" + bible.chapter + "\":{";
@@ -66,8 +67,7 @@ namespace bible
                 previous_chapter = bible.chapter;
             }
             
-
-
+            //Add bible verse names
             if (bible.verse ==1 )
             {
                 output += "\"" + bible.verse + "\":" + JsonConvert.SerializeObject(bible);
@@ -78,8 +78,6 @@ namespace bible
                 output += ",\"" + bible.verse + "\":" + JsonConvert.SerializeObject(bible);
                 previous_verse = bible.verse;
             }
-
-                
 
             return output;
         }
@@ -170,14 +168,10 @@ namespace bible
                 var output = regexer(line);
 
                 final_string += output;
-                if (counter == 100)
-                {
-                    //System.Console.WriteLine(final_string);
 
-                }
                 counter++;
             }
-            final_string += "}}}";
+            final_string += "}}}}";
             using (System.IO.StreamWriter fileWriter = new System.IO.StreamWriter(@"C:\Users\Yh\Desktop\output.json", true))
             {
                 fileWriter.WriteLine(final_string);
